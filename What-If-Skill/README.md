@@ -1,5 +1,5 @@
 # Build An Alexa What If Game Skill
-<img src="https://s3.amazonaws.com/whatifbucket/logo.jpg" />
+<img src="https://s3.amazonaws.com/whatifbucket/DesignEvo.jpg" />
 
 ## What You Will Learn
 *  AWS Lambda
