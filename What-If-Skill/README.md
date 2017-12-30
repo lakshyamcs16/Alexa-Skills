@@ -31,3 +31,7 @@ Alexa will begin a new session and ask you what if kind of questions:
 *  "What if Pokemon is for real but all the normal animals are extinct"
 *  Reply: _No_
 *  "Booya! 60% of the people think just like you Isn't that amazing?"
+
+## A sample video on how to use the skill
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/78NBalA8Mv0/0.jpg)](https://www.youtube.com/watch?v=78NBalA8Mv0)
+
