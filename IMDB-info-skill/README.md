@@ -28,36 +28,36 @@ pronounce imdb character by character: I. M. D. B.
 (Always start with this question and say the exact movie name before asking more information about this movie)
 
 * Genre:
-* _"Alexa, ask imdb info, what kind of movie is it"_
+  _"Alexa, ask imdb info, what kind of movie is it"_
 
 * Box Office Collection:
-* _"Alexa, ask imdb info, How much did the movie make"_
+  _"Alexa, ask imdb info, How much did the movie make"_
 
 * Writer:
-* _"Alexa, ask imdb info, who wrote that movie"_
+  _"Alexa, ask imdb info, who wrote that movie"_
 
 * Directors:
-* _"Alexa, ask imdb info, who directed that movie"_
+  _"Alexa, ask imdb info, who directed that movie"_
 
 * Star Cast:
-* _"Alexa, ask imdb info, what is the star cast of the movie"_
+  _"Alexa, ask imdb info, what is the star cast of the movie"_
 
 * Content rating:
-* _"Alexa, ask imdb info, what is the content rating of the movie"_
+  _"Alexa, ask imdb info, what is the content rating of the movie"_
 
 * Duration:
-* _"Alexa, ask imdb info, what is the duration of the movie"_
+  _"Alexa, ask imdb info, what is the duration of the movie"_
 
 * Release date:
-* _"Alexa, ask imdb info, what is the release date of the movie"_
+  _"Alexa, ask imdb info, what is the release date of the movie"_
 
 * Storyline:
-* _"Alexa, ask imdb info, what is the storyline of the movie"_
+  _"Alexa, ask imdb info, what is the storyline of the movie"_
 
 * More Ratings:
-* _"Alexa, tell imdb info, yes"_
+  _"Alexa, tell imdb info, yes"_
 
 * To repeat the last speech:
-* _"Alexa, tell imdb info repeat"_
+  _"Alexa, tell imdb info repeat"_
 
 It is the first version of the skill. More skills like saving your favorite movies for quick retrieval, poster of movie in the card and depending on other feedbacks of the users will be added.
