@@ -61,3 +61,6 @@ pronounce imdb character by character: I. M. D. B.
   _"Alexa, tell imdb info repeat"_
 
 It is the first version of the skill. More skills like saving your favorite movies for quick retrieval, poster of movie in the card and depending on other feedbacks of the users will be added.
+
+## A sample video on how to use the skill
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/aW-8FDkuqHY/0.jpg)](https://www.youtube.com/watch?v=aW-8FDkuqHY)
