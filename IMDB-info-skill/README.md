@@ -23,41 +23,41 @@ How to use this skill:
 
 pronounce imdb character by character: I. M. D. B.
 
-To ask the rating of a movie say,
-"Alexa, ask imdb info, what is the rating of movie_name"
+* To ask the rating of a movie say,
+* _"Alexa, ask imdb info, what is the rating of movie_name"_
 (Always start with this question and say the exact movie name before asking more information about this movie)
 
-Genre:
-"Alexa, ask imdb info, what kind of movie is it"
+* Genre:
+* _"Alexa, ask imdb info, what kind of movie is it"_
 
-Box Office Collection:
-"Alexa, ask imdb info, How much did the movie make"
+* Box Office Collection:
+* _"Alexa, ask imdb info, How much did the movie make"_
 
-Writer:
-"Alexa, ask imdb info, who wrote that movie"
+* Writer:
+* _"Alexa, ask imdb info, who wrote that movie"_
 
-Directors:
-"Alexa, ask imdb info, who directed that movie"
+* Directors:
+* _"Alexa, ask imdb info, who directed that movie"_
 
-Star Cast:
-"Alexa, ask imdb info, what is the star cast of the movie"
+* Star Cast:
+* _"Alexa, ask imdb info, what is the star cast of the movie"_
 
-Content rating:
-"Alexa, ask imdb info, what is the content rating of the movie"
+* Content rating:
+* _"Alexa, ask imdb info, what is the content rating of the movie"_
 
-Duration:
-"Alexa, ask imdb info, what is the duration of the movie"
+* Duration:
+* _"Alexa, ask imdb info, what is the duration of the movie"_
 
-Release date:
-"Alexa, ask imdb info, what is the release date of the movie"
+* Release date:
+* _"Alexa, ask imdb info, what is the release date of the movie"_
 
-Storyline:
-"Alexa, ask imdb info, what is the storyline of the movie"
+* Storyline:
+* _"Alexa, ask imdb info, what is the storyline of the movie"_
 
-More Ratings:
- "Alexa, tell imdb info, yes"
+* More Ratings:
+* _"Alexa, tell imdb info, yes"_
 
-To repeat the last speech:
-"Alexa, tell imdb info repeat"
+* To repeat the last speech:
+* _"Alexa, tell imdb info repeat"_
 
 It is the first version of the skill. More skills like saving your favorite movies for quick retrieval, poster of movie in the card and depending on other feedbacks of the users will be added.
