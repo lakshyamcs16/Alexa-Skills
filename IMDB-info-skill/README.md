@@ -24,7 +24,7 @@ How to use this skill:
 pronounce imdb character by character: I. M. D. B.
 
 * To ask the rating of a movie say,
-* _"Alexa, ask imdb info, what is the rating of movie_name"_
+  _"Alexa, ask imdb info, what is the rating of movie_name"_
 (Always start with this question and say the exact movie name before asking more information about this movie)
 
 * Genre:
