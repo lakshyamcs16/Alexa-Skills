@@ -1,0 +1,141 @@
+{
+  "languageModel": {
+    "intents": [
+      {
+        "name": "AMAZON.CancelIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.HelpIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.RepeatIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.StopIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.YesIntent",
+        "samples": []
+      },
+      {
+        "name": "ContentRatingIntent",
+        "samples": [
+          "what is the content rating of this movie",
+          "tell me the content rating of the movie",
+          "is it suitable for kids",
+          "is it an adult movie"
+        ],
+        "slots": []
+      },
+      {
+        "name": "DirectorIntent",
+        "samples": [
+          "who was the director of this movie",
+          "who is the director of the movie",
+          "tell me the director of the movie",
+          "who directed the movie"
+        ],
+        "slots": []
+      },
+      {
+        "name": "GenreIntent",
+        "samples": [
+          "what is the genre of the movie",
+          "tell me the genre of the movie",
+          "what kind of movie is it",
+          "what type of movie it is"
+        ],
+        "slots": []
+      },
+      {
+        "name": "GetNewMovieInfoIntent",
+        "samples": [
+          "{movieName} rating",
+          "to tell me the rating of {movieName}",
+          "what is the rating of {movieName}",
+          "How {movieName} movie is rated",
+          "what is {movieName} rating"
+        ],
+        "slots": [
+          {
+            "name": "movieName",
+            "type": "AMAZON.Movie"
+          },
+          {
+            "name": "movieYear",
+            "type": "AMAZON.FOUR_DIGIT_NUMBER"
+          }
+        ]
+      },
+      {
+        "name": "GrossIntent",
+        "samples": [
+          "how much money did this movie make",
+          "how much money did this movie earn",
+          "what was the profit of this movie",
+          "what was the gross collection of the movie",
+          "what was the box office collection of the movie"
+        ],
+        "slots": []
+      },
+      {
+        "name": "MovieLengthIntent",
+        "samples": [
+          "how long is the movie",
+          "what is the duration of the movie",
+          "movie duration",
+          "what is the length of the movie"
+        ],
+        "slots": []
+      },
+      {
+        "name": "ReleaseDateIntent",
+        "samples": [
+          "what is the release date of the movie",
+          "what was the release date of the movie",
+          "when was the movie released",
+          "when was this movie released",
+          "when will the movie release",
+          "when did the movie release"
+        ],
+        "slots": []
+      },
+      {
+        "name": "StarCastIntent",
+        "samples": [
+          "what is the starcast of this movie",
+          "who are the actors of the movie",
+          "who worked in this movie",
+          "name of the actors in the movie",
+          "what is the star cast of the movie"
+        ],
+        "slots": []
+      },
+      {
+        "name": "StorylineIntent",
+        "samples": [
+          "what is the storyline of this movie",
+          "tell me more about this movie",
+          "what is this movie about",
+          "movie description",
+          "what is it about"
+        ],
+        "slots": []
+      },
+      {
+        "name": "WritersIntent",
+        "samples": [
+          "who are the writers of the movie",
+          "name of the writers of the movie",
+          "who wrote this movie"
+        ],
+        "slots": []
+      }
+    ],
+    "invocationName": "imdb info"
+  }
+}
