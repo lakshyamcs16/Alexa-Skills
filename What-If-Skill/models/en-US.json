@@ -1,0 +1,56 @@
+{
+  "languageModel": {
+    "intents": [
+      {
+        "name": "AMAZON.CancelIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.HelpIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.NoIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.PauseIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.RepeatIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.StopIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.YesIntent",
+        "samples": []
+      },
+      {
+        "name": "AskQuestion",
+        "samples": [
+          "begin",
+          "play",
+          "start",
+          "lets begin",
+          "let's begin",
+          "let's play"
+        ],
+        "slots": []
+      },
+      {
+        "name": "Reset",
+        "samples": [
+          "reset",
+          "reset the game",
+          "restart"
+        ],
+        "slots": []
+      }
+    ],
+    "invocationName": "what if"
+  }
+}
