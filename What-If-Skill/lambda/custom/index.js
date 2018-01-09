@@ -2,23 +2,23 @@
 /* eslint quote-props: ["error", "consistent"]*/
 
 /**
- *
- *
+ *  
+ * 
  * this.event.context.System.device.deviceId
  **/
 
 'use strict';
 const regexp = /<[^>]*>/g;
 const Alexa = require('alexa-sdk');
-const AWS = require('aws-sdk');
-const AWSregion = 'us-east-1';
+const AWS = require('aws-sdk');  
+const AWSregion = 'us-east-1';   
 var persistenceEnabled;
 
 AWS.config.update({
       region: AWSregion
 });
 
-const APP_ID = undefined;  // TODO replace with your app ID (OPTIONAL).
+const APP_ID = "amzn1.ask.skill.ad1eba4b-f4f8-43b2-9d6a-99281a53e303";  // TODO replace with your app ID (OPTIONAL).
 
 var randomQuestion, speechOutput, cardOutputQues, cardOutput, say, currentStep;
 
@@ -29,8 +29,8 @@ const speechConsYes = ["Booya", "All righty", "Bam", "Bazinga", "Bingo", "Boom",
 const speechConsNo = ["Argh", "Aw man", "Blarg", "Blast", "Boo", "Bummer", "Darn", "D'oh", "Eek", "Honk", "Le sigh",
 "Mamma mia", "Oh boy", "Oh dear", "Oof", "Ouch", "Ruh roh", "Shucks", "Uh oh", "Wah wah", "Whoops a daisy", "Yikes"];
 
-const speechConsNoComments = ["But really?", "well, there's nothing wrong in being different", "what's up with people these days?",
-"But I am with you", "I know! Even I am shocked!", "but don't you worry, you seem completely normal to me",
+const speechConsNoComments = ["But really?", "well, there's nothing wrong in being different", "what's up with people these days?", 
+"But I am with you", "I know! Even I am shocked!", "but don't you worry, you seem completely normal to me", 
 "but if you will think about what people might think of you, then what the people would think of? Very smart! I know right?",
 "well, this is interesting to know", "but hey what's wrong with that?", "I think you should ask your friends and see what they think?",
 "but I thought it would be the other way round!", "Haha you are different! I like you!"];
@@ -39,19 +39,22 @@ const speechConsYesComments = [". You're certainly normal", "Going with the flow
 "you're definitely not gonna have any problem in mixing with people", "I like the way you think", "sweet! why don't you ask your friends the same question?",
 "You are such a positive person", "you are so wise", "Isn't that amazing?", "you're doing so well, keep playing"];
 
-const stopStrings = [ "No duty is more urgent than that of returning thanks.",
+const stopStrings = [ "No duty is more urgent than that of returning thanks.", 
 "I feel a very unusual sensation – if it is not indigestion, I think it must be gratitude.",
 "When we were children we were grateful to those who filled our stockings at Christmas time. Why are we not grateful to the developer for making this app?",
 "If you can't be content with what you have received, be thankful for what you have escaped.",
 "I am thankful for you and laughter, except when milk comes out of my nose.",
 "You are one of my favourite people to spend an time with; I enjoy asking questions to you.",
-"I admire your excellent taste.",
+"I admire your excellent taste.", 
 "You have outdone yourself. Of course, you always do.",
 "Give thanks for a little and you will find a lot.",
 "We can only be said to be alive in those moments when our hearts are conscious of our treasures.",
 "Be thankful for what you have and you’ll end up having more.",
 "Forget injuries, never forget kindnesses."
 ];
+
+const help = ["You can say \"yes\" if you agree or you can say \"No\" if you don't",
+"Do you agree? you can say \"yes\" or \"no\".", "What do you think? \"yes\" or \"No\"?", "Is that a \"yes\" or a \"No\"?"];
 
 const languageStrings = {
     'en': {
@@ -166,15 +169,15 @@ const languageStrings = {
                 {first: "you could teleport yourself anywhere you wanted", but: "when you did, someone swapped places with you", Yes: "54" },
                 {first: "you could eat as much ice-cream as you wanted without it affecting your health", but: "you had to drive an ice-cream van for the rest of your life", Yes: "29" },
                 {first: "you could get 4 inches taller", but: "your arms came 2 inches shorter", Yes: "21" },
-
-
+               
+                
 
             ],
             WELCOME: 'Welcome to the "what if" game',
             SKILL_NAME: 'What if...',
             GET_WHAT_IF_MESSAGE: "what <emphasis level = 'strong' >if... </emphasis>",
             GET_BUT_MESSAGE: "<break time = '1s' /><emphasis level = 'strong' >but... </emphasis>",
-            HELP_MESSAGE: 'You can say begin, or, you can say stop... What can I help you with?',
+            HELP_MESSAGE: 'I will ask you what if... kind of questions, you can reply with a "Yes" if you agree or "no" if you do not agree. You can also say begin, pause, or, you can say stop at any point in time... What can I help you with?',
             HELP_REPROMPT: 'What can I help you with?',
             STOP_MESSAGE: 'So, thank you for playing the game "what if...". I hope to see you again. <say-as interpret-as = "interjection">au revoir</say-as>',
         },
@@ -291,16 +294,16 @@ const languageStrings = {
                 {first: "you could teleport yourself anywhere you wanted", but: "when you did, someone swapped places with you", Yes: "54" },
                 {first: "you could eat as much ice-cream as you wanted without it affecting your health", but: "you had to drive an ice-cream van for the rest of your life", Yes: "29" },
                 {first: "you could get 4 inches taller", but: "your arms came 2 inches shorter", Yes: "21" },
-
+        
             ],
              WELCOME: 'Welcome to the "what if" game',
             SKILL_NAME: 'What if...',
             GET_WHAT_IF_MESSAGE: "what <emphasis level = 'strong' >if... </emphasis>",
             GET_BUT_MESSAGE: "<break time = '1s' /><emphasis level = 'strong' >but... </emphasis>",
-            HELP_MESSAGE: 'You can say begin, or, you can say stop... What can I help you with?',
+            HELP_MESSAGE: 'I will ask you what if... kind of questions, you can reply with a "Yes" if you agree or "no" if you do not agree. You can also say begin, pause, or, you can say stop at any point in time... What can I help you with?',
             HELP_REPROMPT: 'What can I help you with?',
             STOP_MESSAGE: 'So, thank you for playing the game "what if...". I hope to see you again. <say-as interpret-as = "interjection">au revoir</say-as>',
-
+        
         },
     },
     'en-GB': {
@@ -415,16 +418,16 @@ const languageStrings = {
                 {first: "you could teleport yourself anywhere you wanted", but: "when you did, someone swapped places with you", Yes: "54" },
                 {first: "you could eat as much ice-cream as you wanted without it affecting your health", but: "you had to drive an ice-cream van for the rest of your life", Yes: "29" },
                 {first: "you could get 4 inches taller", but: "your arms came 2 inches shorter", Yes: "21" },
-
+        
             ],
              WELCOME: 'Welcome to the "what if" game',
             SKILL_NAME: 'What if...',
             GET_WHAT_IF_MESSAGE: "what <emphasis level = 'strong' >if... </emphasis>",
             GET_BUT_MESSAGE: "<break time = '1s' /><emphasis level = 'strong' >but... </emphasis>",
-            HELP_MESSAGE: 'You can say begin, or, you can say stop... What can I help you with?',
+            HELP_MESSAGE: 'I will ask you what if... kind of questions, you can reply with a "Yes" if you agree or "no" if you do not agree. You can also say begin, pause, or, you can say stop at any point in time... What can I help you with?',
             HELP_REPROMPT: 'What can I help you with?',
             STOP_MESSAGE: 'So, thank you for playing the game "what if...". I hope to see you again. Bye-bye',
-
+        
         },
     },
 };
@@ -438,14 +441,14 @@ const handlers = {
               this.response.cardRenderer(this.t('SKILL_NAME'), this.t('WELCOME'),null);
               currentStep = 1;
           } else {
-
-              speak = '<say-as interpret-as = "interjection"> Welcome back!</say-as> To continue with the game say begin';
+              
+              speak = '<say-as interpret-as = "interjection"> Welcome back!</say-as> To continue with the game say begin or say stop to end the game';
               var card = 'Welcome back. Let\'s continue with the game, say, begin';
               currentStep = this.attributes['currentStep'];
               this.response.cardRenderer(card);
-
+              
           }
-
+          
           this.response.speak(speak).listen(speak);
           this.emit(':responseReady');
     },
@@ -459,7 +462,7 @@ const handlers = {
           currentStep = 1;
       } else {
           this.emit('LaunchRequest');
-      }
+      } 
       var speak = 'Game has been reset. Say begin to begin again';
       var result = speak.replace(regexp, '');
 
@@ -470,10 +473,10 @@ const handlers = {
     'GetQuestion': function () {
         // Get a random space fact from the space facts list
         // Use this.t() to get corresponding language data
-
+        
         const QuesArr = this.t('DATA');
         const QuesIndex = currentStep;
-
+            
         randomQuestion = QuesArr[QuesIndex - 1];
 
         speechOutput = this.t('GET_WHAT_IF_MESSAGE') + randomQuestion.first + this.t('GET_BUT_MESSAGE') + randomQuestion.but;
@@ -484,9 +487,10 @@ const handlers = {
             speechOutput = say + speechOutput;
             cardOutputQues = cardOutput + 'Next Question: \n' + cardOutputQues;
         }
-
+        
         var result = cardOutputQues.replace(regexp, '');
 
+        speechOutput = speechOutput + '<break time = "1s" />' + help[getRandom(0, help.length-1)];
         this.response.cardRenderer(this.t('SKILL_NAME'), result, null);
         this.response.speak(speechOutput).listen(speechOutput);
         this.emit(":responseReady");
@@ -496,7 +500,7 @@ const handlers = {
         const speechOutput = this.t('HELP_MESSAGE');
         const reprompt = this.t('HELP_MESSAGE');
         var result = speechOutput.replace(regexp, '');
-
+        
         this.response.cardRenderer(this.t('SKILL_NAME'), result);
         this.emit(':ask', speechOutput, reprompt);
     },
@@ -511,7 +515,7 @@ const handlers = {
           console.log('session ended!');
           say = '';
           var randomGoodbye = getRandom(0, stopStrings.length - 1);
-
+          
           this.response.cardRenderer(this.t('SKILL_NAME'), stopStrings[randomGoodbye], null);
           this.response.speak(stopStrings[randomGoodbye] + ' ' +this.t('STOP_MESSAGE'));
           this.emit(':responseReady');
@@ -524,7 +528,7 @@ const handlers = {
         }else {
             say = getSpeechCon('No') + randomQuestion.Yes + ' percent people think just like you!' + getSpeechCon('NoComments') + '<break time = "2s" />';
         }
-
+        
         cardOutput = '\n' + randomQuestion.Yes + '% people also said yes and agree with you!\n';
         randomQuestion.Yes = (Math.round(yes + 0.01)).toString();
         currentStep = incrementStep.call(this, 1);
@@ -557,14 +561,14 @@ const handlers = {
         <break time="500ms" />4<break time="500ms" />3<break time="500ms" />2<break time="500ms" />1<break time="500ms" />0.\
         Say "begin" or "stop"';
         say = '';
-
+        
         var result = 'You have 10 seconds to make up your mind. Say "begin" to play or say "stop" to exit after 10 seconds.';
 
         this.response.cardRenderer(this.t('SKILL_NAME'), result);
         this.response.speak(wait).listen(wait);
         this.emit(':responseReady');
-
-
+        
+        
     },
     'Unhandled': function() {
         this.response.speak('Sorry, I didn\'t get that. Try saying "yes" or "no".')
