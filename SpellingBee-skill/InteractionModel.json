@@ -1,0 +1,310 @@
+{
+  "languageModel": {
+    "types": [
+      {
+        "name": "alphabet",
+        "values": [
+          {
+            "id": null,
+            "name": {
+              "value": "a",
+              "synonyms": [
+                "a for apple"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "b",
+              "synonyms": [
+                "b for ball"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "c",
+              "synonyms": [
+                "c for cat"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "d",
+              "synonyms": [
+                "d for dog"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "e",
+              "synonyms": [
+                "e for elephant"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "f",
+              "synonyms": [
+                "f for fish"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "g",
+              "synonyms": [
+                "g for goat"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "h",
+              "synonyms": [
+                "h for horse"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "i",
+              "synonyms": [
+                "i for ice cream"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "j",
+              "synonyms": [
+                "j for jelly"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "k",
+              "synonyms": [
+                "k for kite"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "l",
+              "synonyms": [
+                "L for lion"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "m",
+              "synonyms": [
+                "m for monkey"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "n",
+              "synonyms": [
+                "n for nine"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "o",
+              "synonyms": [
+                "o for orange"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "p",
+              "synonyms": [
+                "p for penguin"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "q",
+              "synonyms": [
+                "q for queen"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "r",
+              "synonyms": [
+                "r for rat"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "s",
+              "synonyms": [
+                "s for sun"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "t",
+              "synonyms": [
+                "t for tiger"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "u",
+              "synonyms": [
+                "u for umbrella"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "v",
+              "synonyms": [
+                "v for violin"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "w",
+              "synonyms": [
+                "w for whale"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "x",
+              "synonyms": [
+                "x for xylophone"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "y",
+              "synonyms": [
+                "y for yatch"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "z",
+              "synonyms": [
+                "z for zebra"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "intents": [
+      {
+        "name": "AMAZON.CancelIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.HelpIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.StopIntent",
+        "samples": []
+      },
+      {
+        "name": "FullwordIntent",
+        "samples": [
+          "period",
+          "full stop",
+          "over"
+        ],
+        "slots": []
+      },
+      {
+        "name": "LetterIntent",
+        "samples": [
+          "{alphabet}",
+          "the letter {alphabet}",
+          "{alphabet} for {alphabetAnimal}",
+          "{alphabet} for {alphabetColor}",
+          "{alphabet} for {alphabetCountry}",
+          "{alphabet} for {alphabetFood}"
+        ],
+        "slots": [
+          {
+            "name": "alphabet",
+            "type": "alphabet"
+          },
+          {
+            "name": "alphabetAnimal",
+            "type": "AMAZON.Animal"
+          },
+          {
+            "name": "alphabetColor",
+            "type": "AMAZON.Color"
+          },
+          {
+            "name": "alphabetCountry",
+            "type": "AMAZON.Country"
+          },
+          {
+            "name": "alphabetFood",
+            "type": "AMAZON.Food"
+          }
+        ]
+      },
+      {
+        "name": "SpellgameIntent",
+        "samples": [
+          "open",
+          "begin"
+        ],
+        "slots": []
+      }
+    ],
+    "invocationName": "word game"
+  }
+}
