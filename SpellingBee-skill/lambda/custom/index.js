@@ -14,24 +14,24 @@ const Alexa = require('alexa-sdk');
 const APP_ID = 'amzn1.ask.skill.cbf3fa32-62fd-4062-960c-bb36e6982a0b';
 var word = '', data = '', speech = '', say = '', generatedWord = '';
 var http = require('http');
-var dict = '';
 var spellPos = 0;
+var defIteration = 0;
 const languageStrings = {
     'en-US': {
         translation: {
             SKILL_NAME: 'Spelling Bee',
-            HELP_MESSAGE: 'You can ask me about the IMDB ratings, content rating, star cast, writers, director, box office collection, genre, release date and duration of the movie. You can also ask me the storyline of the movie.',
-            HELP_REPROMPT: 'What can I help you with?',
-            STOP_MESSAGE: 'IMDB info use karne ke liye aapka dhanyawaad! ',
+            HELP_MESSAGE: 'I will ask you a word. You need to spell it. If you need help, you may ask me the definitions, root word, part of speech or usage of the word.',
+            HELP_REPROMPT: 'To spell a word like "apple", just begin spelling like "The letter a" or "A for Australia"',
+            STOP_MESSAGE: 'Sad to see you go, spelling bee champ. See you later, alligator! ',
             SORRY_MESSAGE: '<say-as interpret-as="interjection">uh oh!</say-as><break time="1s"/> I couldn\'t find this information',
         },
     },
     'en-IN': {
         translation: {
             SKILL_NAME: 'Spelling Bee',
-            HELP_MESSAGE: 'You can ask me about the IMDB ratings, content rating, star cast, writers, director, box office collection, genre, release date and duration of the movie. You can also ask me the storyline of the movie.',
-            HELP_REPROMPT: 'What can I help you with?',
-            STOP_MESSAGE: 'IMDB info use karne ke liye aapka dhanyawaad! ',
+            HELP_MESSAGE: 'I will ask you a word. You need to spell it. If you need help, you may ask me the definitions, root word, part of speech or usage of the word.',
+            HELP_REPROMPT: 'To spell a word like "apple", just begin spelling like "The letter a" or "A for Australia"',
+            STOP_MESSAGE: 'Sad to see you go, spelling bee champ. See you in a while, crocodile! ',
             SORRY_MESSAGE: '<say-as interpret-as="interjection">uh oh!</say-as><break time="1s"/> I couldn\'t find this information',
         },
     },
@@ -45,7 +45,7 @@ const handlers = {
         word = '';
         spellPos = 0;
         generatedWord = '';
-        http.get('http://api.wordnik.com/v4/words.json/randomWords?hasDictionaryDef=true&minCorpusCount=0&minLength=3&maxLength=8&limit=1&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5', (resp) => {
+        http.get('http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&excludePartOfSpeech=family-name&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5', (resp) => {
 
             // A chunk of data has been recieved.
             resp.on('data', (chunk) => {
@@ -55,9 +55,8 @@ const handlers = {
             resp.on('end', () => {
                         speech = JSON.parse(data);
 
-                        generatedWord = speech[0].word;
+                        generatedWord = speech.word;
                         say = 'Your word is '+ generatedWord;
-                        //this.definitions();
                         this.response.cardRenderer(say);
                         this.response.speak(say).listen(say);
                         this.emit(':responseReady');
@@ -132,6 +131,56 @@ const handlers = {
         }
         this.emit(':tellWithCard', say, this.t('SKILL_NAME'), word);
         word = '';
+    },
+    'DefinitionIntent': function() {
+        data = '';
+        defIteration = 0;
+        var definition = '';
+        http.get('http://api.wordnik.com:80/v4/word.json/'+generatedWord+'/definitions?limit=200&includeRelated=false&sourceDictionaries=all&useCanonical=true&includeTags=false&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5', (resp) => {
+
+            // A chunk of data has been recieved.
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            resp.on('end', () => {
+                        speech = JSON.parse(data);
+
+                        if(speech[defIteration] !== undefined) {
+                            definition = generatedWord + ' is defined as ' + speech[defIteration].text + '. Can you spell it now?';
+                        }else{
+                            definition = 'I am sorry there are no more definitions available. But can you spell it?';
+                        }
+                        this.response.cardRenderer(definition);
+                        this.response.speak(definition).listen(definition);
+                        this.emit(':responseReady');
+            });
+    });
+    },
+    'PartOfSpeechIntent': function() {
+        
+    },
+    'RootIntent': function() {
+        
+    },
+    'UsageIntent': function() {
+        
+    },
+    'DefineWordIntent': function() {
+        
+    },
+    'AlternateDefinitionIntent': function() {
+        var definition = '';
+        defIteration++;
+        if(speech[defIteration] !== undefined){
+            definition = 'Alternate defintion for the word '+ generatedWord + ' is ' + speech[defIteration].text + '. Can you spell it now?';
+        }else{
+            definition = 'I am sorry there are no more definitions available. But can you spell it?';
+        }
+        
+        this.response.cardRenderer(definition);
+        this.response.speak(definition).listen(definition);
+        this.emit(':responseReady');
     },
     'AMAZON.HelpIntent': function () {
         const speechOutput = this.t('HELP_MESSAGE');
