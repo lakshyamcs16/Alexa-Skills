@@ -11,11 +11,25 @@
 'use strict';
 
 const Alexa = require('alexa-sdk');
+const awsSDK = require('aws-sdk');
+const promisify = require('es6-promisify');
+
+
 const APP_ID = 'amzn1.ask.skill.cbf3fa32-62fd-4062-960c-bb36e6982a0b';
 var word = '', data = '', speech = '', say = '', generatedWord = '';
 var http = require('http');
 var spellPos = 0;
 var defIteration = 0;
+
+const SpellingBeeTable = 'SpellingBeeTable';
+const docClient = new awsSDK.DynamoDB.DocumentClient();
+
+// convert callback style functions to promises
+const dbScan = promisify(docClient.scan, docClient);
+const dbGet = promisify(docClient.get, docClient);
+const dbPut = promisify(docClient.put, docClient);
+const dbDelete = promisify(docClient.delete, docClient);
+
 const languageStrings = {
     'en-US': {
         translation: {
@@ -38,14 +52,18 @@ const languageStrings = {
 };
 const handlers = {
     'LaunchRequest': function () {
+        
+        
         this.emit('SpellgameIntent');
     },
     'SpellgameIntent': function() {
+       /* this.response.speak('<audio src="https://s3.amazonaws.com/spellbeebackend/music.mp3" /> Welcome to the spelling bee game. Do you think you have what it takes to be a spelling bee champ? Let us find out! ');
+        this.emit(':responseReady');*/
         data = '';
         word = '';
         spellPos = 0;
         generatedWord = '';
-        http.get('http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&excludePartOfSpeech=family-name&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5', (resp) => {
+        http.get('http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&excludePartOfSpeech=family-name&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&api_key=a06707d7bd3260985000e0089360907e93d2384b116b884c9', (resp) => {
 
             // A chunk of data has been recieved.
             resp.on('data', (chunk) => {
@@ -57,6 +75,10 @@ const handlers = {
 
                         generatedWord = speech.word;
                         say = 'Your word is '+ generatedWord;
+                        
+                        
+                        
+                        
                         this.response.cardRenderer(say);
                         this.response.speak(say).listen(say);
                         this.emit(':responseReady');
@@ -70,7 +92,7 @@ const handlers = {
         var alphabetFood = this.event.request.intent.slots.alphabetFood.value
         var alphabetCountry = this.event.request.intent.slots.alphabetCountry.value;
         var alphabetColor = this.event.request.intent.slots.alphabetColor.value;
-
+        var helpWord = this.event.request.intent.slots.helpWord;
 
         if(alphabetAnimal) {
                 if(alphabetAnimal.toLowerCase().charAt(0) === generatedWord.toLowerCase().charAt(spellPos)) {
@@ -112,31 +134,36 @@ const handlers = {
             }else{
                 say = 'Try again alphabet' + generatedWord.charAt(spellPos) + ' ' + alphabet.charAt(0);
             }
+        }else if(helpWord){
+            if(helpWord.value.toLowerCase().charAt(0) === generatedWord.toLowerCase().charAt(spellPos)) {
+                say = 'say next letter';
+                word += helpWord.value.charAt(0);
+                spellPos = spellPos + 1;
+            }else{
+                say = 'Try again alphabet' + generatedWord.charAt(spellPos) + ' ' +  helpWord.value.charAt(0);
+            }
         }else{
             say = 'Say it again please';
         }
 
         if(say === 'say next letter' && spellPos == generatedWord.length) {
-            say = 'you said ' + word + '. Which is correct!';
+            say = 'you said ' + word + '. Which is correct! Bravo!';
+            this.emit(':tellWithCard', say, this.t('SKILL_NAME'), word);
+            word = '';
         }
 
         this.response.speak(say).listen(say);
         this.emit(':responseReady');
     },
-    'FullwordIntent': function () {
-        var say = 'you said ' + word;
-        word = word.split('.').join('').toLowerCase();
-        if(word === generatedWord) {
-            say += ' bravo!';
-        }
-        this.emit(':tellWithCard', say, this.t('SKILL_NAME'), word);
-        word = '';
+    'FullWordIntent':function() {
+            this.response.speak('Try saying the letter like "The letter a" or "A for apple"').listen('Try saying the letter like "The letter a" or "A for apple"');
+            this.emit(':responseReady');
     },
     'DefinitionIntent': function() {
         data = '';
         defIteration = 0;
         var definition = '';
-        http.get('http://api.wordnik.com:80/v4/word.json/'+generatedWord+'/definitions?limit=200&includeRelated=false&sourceDictionaries=all&useCanonical=true&includeTags=false&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5', (resp) => {
+        http.get('http://api.wordnik.com:80/v4/word.json/'+generatedWord+'/definitions?limit=200&includeRelated=false&sourceDictionaries=all&useCanonical=true&includeTags=false&api_key=a06707d7bd3260985000e0089360907e93d2384b116b884c9', (resp) => {
 
             // A chunk of data has been recieved.
             resp.on('data', (chunk) => {
@@ -149,7 +176,7 @@ const handlers = {
                         if(speech[defIteration] !== undefined) {
                             definition = generatedWord + ' is defined as ' + speech[defIteration].text + '. Can you spell it now?';
                         }else{
-                            definition = 'I am sorry there are no more definitions available. But can you spell it?';
+                            definition = 'I am sorry there are no definitions available. But can you spell it?';
                         }
                         this.response.cardRenderer(definition);
                         this.response.speak(definition).listen(definition);
@@ -158,16 +185,55 @@ const handlers = {
     });
     },
     'PartOfSpeechIntent': function() {
-        
+        data = '';
+        var partOfSpeech = '';
+        http.get('http://api.wordnik.com:80/v4/word.json/'+generatedWord+'/definitions?limit=200&includeRelated=false&sourceDictionaries=all&useCanonical=true&includeTags=false&api_key=a06707d7bd3260985000e0089360907e93d2384b116b884c9', (resp) => {
+
+            // A chunk of data has been recieved.
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            resp.on('end', () => {
+                        speech = JSON.parse(data);
+
+                        if(speech[0] !== undefined) {
+                            partOfSpeech = 'The part of speech for the word ' + generatedWord  + ' is ' + speech[0].partOfSpeech + '. Can you spell it now?';
+                        }else{
+                            partOfSpeech = 'I am sorry. I don\'t have any information about the part of speech for this word. But can you spell it?';
+                        }
+                        this.response.cardRenderer(partOfSpeech);
+                        this.response.speak(partOfSpeech).listen(partOfSpeech);
+                        this.emit(':responseReady');
+            });
+    });
     },
     'RootIntent': function() {
         
     },
     'UsageIntent': function() {
-        
-    },
-    'DefineWordIntent': function() {
-        
+        data = '';
+        var usage = '';
+        http.get('        http://api.wordnik.com:80/v4/word.json/'+generatedWord+'/topExample?useCanonical=false&api_key=a06707d7bd3260985000e0089360907e93d2384b116b884c9', (resp) => {
+
+            // A chunk of data has been recieved.
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            resp.on('end', () => {
+                        speech = JSON.parse(data);
+
+                        if(speech !== undefined) {
+                            usage = speech.text + '. Can you spell it now?';
+                        }else{
+                            usage = 'I am sorry. I don\'t have any information about the part of speech for this word. But can you spell it?';
+                        }
+                        this.response.cardRenderer(usage);
+                        this.response.speak(usage).listen(usage);
+                        this.emit(':responseReady');
+            });
+    });
     },
     'AlternateDefinitionIntent': function() {
         var definition = '';
