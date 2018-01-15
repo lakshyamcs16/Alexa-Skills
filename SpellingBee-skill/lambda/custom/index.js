@@ -13,15 +13,17 @@
 const Alexa = require('alexa-sdk');
 const awsSDK = require('aws-sdk');
 const promisify = require('es6-promisify');
-
+var  score = 100, totalScore = 0;
 
 const APP_ID = 'amzn1.ask.skill.cbf3fa32-62fd-4062-960c-bb36e6982a0b';
+
 var word = '', data = '', speech = '', say = '', generatedWord = '';
 var http = require('http');
 var spellPos = 0;
 var defIteration = 0;
 
 const SpellingBeeTable = 'SpellingBeeTable';
+
 const docClient = new awsSDK.DynamoDB.DocumentClient();
 
 // convert callback style functions to promises
@@ -29,6 +31,7 @@ const dbScan = promisify(docClient.scan, docClient);
 const dbGet = promisify(docClient.get, docClient);
 const dbPut = promisify(docClient.put, docClient);
 const dbDelete = promisify(docClient.delete, docClient);
+
 
 const languageStrings = {
     'en-US': {
@@ -53,12 +56,33 @@ const languageStrings = {
 const handlers = {
     'LaunchRequest': function () {
         
+        const  userId  = this.event.session.user.userId;
+
+        const dynamoParams = {
+                  TableName: SpellingBeeTable,
+                  Key: {
+                    UserId: userId
+                  }
+                };
+                
+        dbGet(dynamoParams).then(data => {        
+            const spell = data.Item;
+
+        if (spell) {
+          this.emit(':tell', `Welcome again Lakshya! Your last word was ${spell.Word}`);
+        }
+        else {
+                  this.emit('SpellgameIntent');
+        }
+      })
+      .catch(err => console.error(err));
         
-        this.emit('SpellgameIntent');
     },
     'SpellgameIntent': function() {
        /* this.response.speak('<audio src="https://s3.amazonaws.com/spellbeebackend/music.mp3" /> Welcome to the spelling bee game. Do you think you have what it takes to be a spelling bee champ? Let us find out! ');
         this.emit(':responseReady');*/
+        const  userId  = this.event.context.System.user.userId;
+
         data = '';
         word = '';
         spellPos = 0;
@@ -76,9 +100,17 @@ const handlers = {
                         generatedWord = speech.word;
                         say = 'Your word is '+ generatedWord;
                         
+                        const dynamoParams = {
+                          TableName: SpellingBeeTable,
+                          Item: {
+                            Word: generatedWord,
+                            /*UserScore:
+                            QuestionNumber:*/
+                            UserId: userId
+                          }
+                        };
                         
-                        
-                        
+                        dbPut(dynamoParams);
                         this.response.cardRenderer(say);
                         this.response.speak(say).listen(say);
                         this.emit(':responseReady');
@@ -175,6 +207,8 @@ const handlers = {
 
                         if(speech[defIteration] !== undefined) {
                             definition = generatedWord + ' is defined as ' + speech[defIteration].text + '. Can you spell it now?';
+                            score = score - 10;
+                            
                         }else{
                             definition = 'I am sorry there are no definitions available. But can you spell it?';
                         }
@@ -199,6 +233,9 @@ const handlers = {
 
                         if(speech[0] !== undefined) {
                             partOfSpeech = 'The part of speech for the word ' + generatedWord  + ' is ' + speech[0].partOfSpeech + '. Can you spell it now?';
+                            score = score - 5;
+
+                            
                         }else{
                             partOfSpeech = 'I am sorry. I don\'t have any information about the part of speech for this word. But can you spell it?';
                         }
@@ -226,6 +263,8 @@ const handlers = {
 
                         if(speech !== undefined) {
                             usage = speech.text + '. Can you spell it now?';
+                            score = score - 10;
+
                         }else{
                             usage = 'I am sorry. I don\'t have any information about the part of speech for this word. But can you spell it?';
                         }
@@ -240,6 +279,7 @@ const handlers = {
         defIteration++;
         if(speech[defIteration] !== undefined){
             definition = 'Alternate defintion for the word '+ generatedWord + ' is ' + speech[defIteration].text + '. Can you spell it now?';
+            score = score - 15;
         }else{
             definition = 'I am sorry there are no more definitions available. But can you spell it?';
         }
@@ -269,8 +309,3 @@ exports.handler = function (event, context) {
     alexa.registerHandlers(handlers);
     alexa.execute();
 };
-
-//pass the constructor a config object with your key
-
-
-//sample method
