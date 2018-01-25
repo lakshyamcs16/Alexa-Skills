@@ -403,7 +403,7 @@ const handlers = {
                                 +'\nMetacritic: '+speech.Ratings[2].Value;
                 this.response.cardRenderer(movieTitle, cardValue, speech.Poster.slice(0, -3)+'jpeg');
             }
-            this.emit(':tell', say);
+            this.emit(':tellWithCard', say, movieTitle, cardValue);
         }
     },
     'AMAZON.NoIntent': function () {
@@ -413,6 +413,8 @@ const handlers = {
           var reprompt = "Please say a number to search for";
           this.response.speak(say).listen(reprompt);
           this.emit(':responseReady');
+      }else{
+          this.emit(':tell', this.t('STOP_MESSAGE'));
       }  
     },
     'AMAZON.RepeatIntent':function() {
@@ -443,6 +445,11 @@ const handlers = {
             default:
                     this.emit(':tell', 'Please ask me about the rating of a movie.');
         }
+    },
+    'Unhandled':function(){
+        say = "Could you say it again?";
+        this.response.speak(say).listen(say);
+        this.emit(":responseReady");
     }
 };
 
