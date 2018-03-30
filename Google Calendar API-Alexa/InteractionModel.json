@@ -1,0 +1,30 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "google birthdays",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "GetBirthdays",
+                    "slots": [],
+                    "samples": [
+                        "get birthdays",
+				   "to get birthdays",
+                    ]
+                }
+            ],
+            "types": []
+        }
+    }
+}
