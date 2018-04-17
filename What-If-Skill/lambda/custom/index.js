@@ -18,7 +18,7 @@ AWS.config.update({
       region: AWSregion
 });
 
-const APP_ID = "amzn1.ask.skill.ad1eba4b-f4f8-43b2-9d6a-99281a53e303";  // TODO replace with your app ID (OPTIONAL).
+const APP_ID = APP_ID; // TODO replace with your app ID (OPTIONAL).
 
 var randomQuestion, speechOutput, cardOutputQues, cardOutput, say, currentStep;
 
@@ -579,9 +579,8 @@ const handlers = {
 
 exports.handler = function (event, context, callback) {
      var alexa = Alexa.handler(event, context);
-      // alexa.appId = 'amzn1.echo-sdk-ams.app.1234';
-       alexa.dynamoDBTableName = 'WhatIfTable'; // creates new table for session.attributes
-      if (alexa.dynamoDBTableName == 'WhatIfTable' ){
+       alexa.dynamoDBTableName = 'TABLE_NAME'; // creates new table for session.attributes
+      if (alexa.dynamoDBTableName == 'TABLE_NAME' ){
         persistenceEnabled=true;
       } else {
         persistenceEnabled=false;
