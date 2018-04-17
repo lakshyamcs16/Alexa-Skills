@@ -82,14 +82,14 @@ axios.get(`https://api.amazonalexa.com/v1/devices/${deviceId}/settings/address/c
 .then((response) => {
   countryCode = response.data.countryCode
   zipcode = response.data.postalCode
-  return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${countryCode},${zipcode}&key=AIzaSyD_Jv1apXTjx9Ij9ObGo2OVZouXt6kveSA`)
+  return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${countryCode},${zipcode}&key=GOOGLE_MAPS_KEY`)
 })
 .then((response) => {
   city = response.data.results[0].address_components[1].short_name
   state = response.data.results[0].address_components[3].short_name
   lat = response.data.results[0].geometry.location.lat
   lng = response.data.results[0].geometry.location.lng
-  return axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${moment().unix()}&key=AIzaSyD_Jv1apXTjx9Ij9ObGo2OVZouXt6kveSA`)
+  return axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${moment().unix()}&key=GOOGLE_MAPS_KEY`)
 })
 .then((response) => {
   timeZoneId = response.data.timeZoneId
