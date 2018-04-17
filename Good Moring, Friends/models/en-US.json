@@ -1,0 +1,91 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "good morning",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": [
+                        "bas kar",
+                        "stop it",
+                        "shut up",
+                        "tham ja",
+                        "ruk ja"
+                    ]
+                },
+                {
+                    "name": "PostCompliment",
+                    "slots": [],
+                    "samples": [
+                        "tweet it on twitter",
+                        "tweet it on timeline",
+                        "post it on twitter",
+                        "post this compliment",
+                        "tweet this compliment",
+                        "to tweet it",
+                        "tweet it",
+                        "to post it",
+                        "post it"
+                    ]
+                },
+                {
+                    "name": "AddFriend",
+                    "slots": [],
+                    "samples": [
+                        "to tag a friend",
+                        "to add a friend",
+                        "tag a follower",
+                        "tag my follower",
+                        "tag a friend",
+                        "add a friend"
+                    ]
+                },
+                {
+                    "name": "AMAZON.YesIntent",
+                    "samples": [
+                        "haan ji",
+                        "haan",
+                        "yo",
+                        "yeah",
+                        "yep",
+                        "yes"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": [
+                        "No",
+                        "More",
+                        "Nope",
+                        "Nah",
+                        "Nahi"
+                    ]
+                },
+                {
+                    "name": "TagFriendIntent",
+                    "slots": [
+                        {
+                            "name": "firstName",
+                            "type": "AMAZON.FirstName"
+                        }
+                    ],
+                    "samples": [
+                        "Add {firstName}",
+                        "Tag {firstName}",
+                        "His name is {firstName}",
+                        "Her name is {firstName}"
+                    ]
+                }
+            ],
+            "types": []
+        }
+    }
+}
