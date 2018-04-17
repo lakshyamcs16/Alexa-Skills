@@ -61,51 +61,52 @@ var but = [" But here's your compliment: "," And now I wanna give you a complime
 var userTime = "";
 const handlers = {
     'LaunchRequest': function () {
-        var token = this.event.session.user.accessToken;
+           //Get twitter access token and access secret 
+           var token = this.event.session.user.accessToken;
+
+
+            //get consent token for device address to get the time using google maps api
+            const userId = this.event.session.user.userId
+            const consentToken = this.event.context.System.apiAccessToken
+            const deviceId = this.event.context.System.device.deviceId
+            let countryCode = ''
+            let postalCode = ''
+            let lat = 0
+            let lng = 0
+            let city = ''
+            let state = ''
+            let timeZoneId = ''
+
+            axios.get(`https://api.amazonalexa.com/v1/devices/${deviceId}/settings/address/countryAndPostalCode`, {
+              headers: { 'Authorization': `Bearer ${consentToken}` }
+            })
+            .then((response) => {
+              countryCode = response.data.countryCode
+              zipcode = response.data.postalCode
+              return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${countryCode},${zipcode}&key=GOOGLE_MAPS_KEY`)
+            })
+            .then((response) => {
+              city = response.data.results[0].address_components[1].short_name
+              state = response.data.results[0].address_components[3].short_name
+              lat = response.data.results[0].geometry.location.lat
+              lng = response.data.results[0].geometry.location.lng
+              return axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${moment().unix()}&key=GOOGLE_MAPS_KEY`)
+            })
+            .then((response) => {
+              timeZoneId = response.data.timeZoneId
+              const currDate = new moment()
+              userTime = currDate.tz(timeZoneId).format('HH')
+            })
 
 
 
-const userId = this.event.session.user.userId
-const consentToken = this.event.context.System.apiAccessToken
-const deviceId = this.event.context.System.device.deviceId
-let countryCode = ''
-let postalCode = ''
-let lat = 0
-let lng = 0
-let city = ''
-let state = ''
-let timeZoneId = ''
 
-axios.get(`https://api.amazonalexa.com/v1/devices/${deviceId}/settings/address/countryAndPostalCode`, {
-  headers: { 'Authorization': `Bearer ${consentToken}` }
-})
-.then((response) => {
-  countryCode = response.data.countryCode
-  zipcode = response.data.postalCode
-  return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${countryCode},${zipcode}&key=GOOGLE_MAPS_KEY`)
-})
-.then((response) => {
-  city = response.data.results[0].address_components[1].short_name
-  state = response.data.results[0].address_components[3].short_name
-  lat = response.data.results[0].geometry.location.lat
-  lng = response.data.results[0].geometry.location.lng
-  return axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${moment().unix()}&key=GOOGLE_MAPS_KEY`)
-})
-.then((response) => {
-  timeZoneId = response.data.timeZoneId
-  const currDate = new moment()
-  userTime = currDate.tz(timeZoneId).format('HH')
-})
-
-
-
-
-
+        //setup twitter using token fetched from skill's session
         var tokenDetails = token.split(',');
         speechOutput = "";
         client = new Twitter({
-                          consumer_key: '8tYW25EUChdMWx1P58GWbqrfo',
-                          consumer_secret: '95bbhuHeA7c4zYc4vGAVgYm6uwh06RrizRuo3wBTkheUTq2Db8',
+                          consumer_key: 'CONSUMER_KEY',
+                          consumer_secret: 'CONSUMER_SECRET',
                           access_token_key: tokenDetails[0],
                           access_token_secret: tokenDetails[1]
 
@@ -113,7 +114,8 @@ axios.get(`https://api.amazonalexa.com/v1/devices/${deviceId}/settings/address/c
                         
         let data = '';
         var urlTagStart = 0, urlTagEnd = 0;
-
+            
+        //scrap complimengenrator website and get a new compliment. Also, save the state of compliment.
         var complimentMap = [ "large","medium","small" ];
         var str = "";
         http.get('http://www.complimentgenerator.co.uk/', (resp) => {
@@ -267,8 +269,8 @@ exports.handler = function (event, context, callback) {
     const alexa = Alexa.handler(event, context, callback);
     alexa.APP_ID = APP_ID;
     
-     alexa.dynamoDBTableName = 'ComplimentTable'; // creates new table for session.attributes
-      if (alexa.dynamoDBTableName == 'ComplimentTable' ){
+     alexa.dynamoDBTableName = 'TABLE_NAME'; // creates new table for session.attributes
+      if (alexa.dynamoDBTableName == 'TABLE_NAME' ){
         persistenceEnabled = true;
       } else {
         persistenceEnabled = false;
