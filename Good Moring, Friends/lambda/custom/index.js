@@ -10,10 +10,10 @@
 
 'use strict';
 const Alexa   = require('alexa-sdk');
-const AWS = require('aws-sdk'); 
+const AWS = require('aws-sdk');
 var axios = require('axios');
-var moment = require('moment-timezone'); 
-const AWSregion = 'us-east-1';   
+var moment = require('moment-timezone');
+const AWSregion = 'us-east-1';
 var persistenceEnabled;
 
 AWS.config.update({
@@ -61,14 +61,9 @@ var but = [" But here's your compliment: "," And now I wanna give you a complime
 var userTime = "";
 const handlers = {
     'LaunchRequest': function () {
-           //Get twitter access token and access secret 
-           var token = this.event.session.user.accessToken;
-
+           //Get twitter access token and access secret
 
             //get consent token for device address to get the time using google maps api
-            const userId = this.event.session.user.userId
-            const consentToken = this.event.context.System.apiAccessToken
-            const deviceId = this.event.context.System.device.deviceId
             let countryCode = ''
             let postalCode = ''
             let lat = 0
@@ -77,92 +72,114 @@ const handlers = {
             let state = ''
             let timeZoneId = ''
 
-            axios.get(`https://api.amazonalexa.com/v1/devices/${deviceId}/settings/address/countryAndPostalCode`, {
-              headers: { 'Authorization': `Bearer ${consentToken}` }
+            console.log(JSON.stringify(this.event));
+
+            if (this.event.context.System.user.permissions) {
+                const token = this.event.context.System.user.permissions.consentToken;
+                const apiEndpoint = this.event.context.System.apiEndpoint;
+                const deviceId = this.event.context.System.device.deviceId;
+                const das = new Alexa.services.DeviceAddressService();
+
+                das.getFullAddress(deviceId, apiEndpoint, token)
+                .then((data) => {
+                  countryCode = data.countryCode;
+                  postalCode = data.postalCode;
+
+                  return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${countryCode},${postalCode}&key=AIzaSyD_Jv1apXTjx9Ij9ObGo2OVZouXt6kveSA`);
+                })
+                .then((response) => {
+                  city = response.data.results[0].address_components[1].short_name
+                  state = response.data.results[0].address_components[3].short_name
+                  lat = response.data.results[0].geometry.location.lat
+                  lng = response.data.results[0].geometry.location.lng
+                  console.log("IDHARRRRRRRR "+city+  " " + state + " " + lat + " " + lng);
+
+                  return axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${moment().unix()}&key=AIzaSyD_Jv1apXTjx9Ij9ObGo2OVZouXt6kveSA`)
             })
             .then((response) => {
-              countryCode = response.data.countryCode
-              zipcode = response.data.postalCode
-              return axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${countryCode},${zipcode}&key=GOOGLE_MAPS_KEY`)
-            })
-            .then((response) => {
-              city = response.data.results[0].address_components[1].short_name
-              state = response.data.results[0].address_components[3].short_name
-              lat = response.data.results[0].geometry.location.lat
-              lng = response.data.results[0].geometry.location.lng
-              return axios.get(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${moment().unix()}&key=GOOGLE_MAPS_KEY`)
-            })
-            .then((response) => {
-              timeZoneId = response.data.timeZoneId
-              const currDate = new moment()
-              userTime = currDate.tz(timeZoneId).format('HH')
-            })
+              timeZoneId = response.data.timeZoneId;
+              const currDate = new moment();
+              userTime = currDate.tz(timeZoneId).format('HH');
+	            this.emit('TwitterIntent');
+              })
+            .catch((error) => {
+                    this.emit(':tellWithLinkAccountCard', 'To use this skill, please go to the companion app to link your twitter account');
+                });
+            } else {
+                this.response.speak('Please grant skill permissions to access your device address.');
+                const permissions = ['read::alexa:device:all:address'];
+                this.response.askForPermissionsConsentCard(permissions);
+                console.log("Response: " + JSON.stringify(this.response));
+                this.emit(':responseReady');
+            }
+    },
+    'TwitterIntent':function() {
+      var token = this.event.session.user.accessToken;
+
+      //setup twitter using token fetched from skill's session
+      var tokenDetails = token.split(',');
+      speechOutput = "";
+      client = new Twitter({
+                        consumer_key: CONSUMER_KEY,
+                        consumer_secret: CONSUMER_SECRET,
+                        access_token_key: tokenDetails[0],
+                        access_token_secret: tokenDetails[1]
+
+                      });
 
 
+      let data = '';
+      var urlTagStart = 0, urlTagEnd = 0;
 
+      //scrap complimengenrator website and get a new compliment. Also, save the state of compliment.
+      var complimentMap = [ "large","medium","small" ];
+      var str = "";
+      http.get('http://www.complimentgenerator.co.uk/', (resp) => {
+          // A chunk of data has been recieved.
+          resp.on('data', (chunk) => {
+            data += chunk;
+          });
 
-        //setup twitter using token fetched from skill's session
-        var tokenDetails = token.split(',');
-        speechOutput = "";
-        client = new Twitter({
-                          consumer_key: 'CONSUMER_KEY',
-                          consumer_secret: 'CONSUMER_SECRET',
-                          access_token_key: tokenDetails[0],
-                          access_token_secret: tokenDetails[1]
+          resp.on('end', () => {
 
-                        });
-                        
-        let data = '';
-        var urlTagStart = 0, urlTagEnd = 0;
-            
-        //scrap complimengenrator website and get a new compliment. Also, save the state of compliment.
-        var complimentMap = [ "large","medium","small" ];
-        var str = "";
-        http.get('http://www.complimentgenerator.co.uk/', (resp) => {
-            // A chunk of data has been recieved.
-            resp.on('data', (chunk) => {
-              data += chunk;
-            });
+                  if(typeof this.attributes['currentStep'] == 'undefined') {
 
-            resp.on('end', () => {
+                      currentStep = 0;
+                      this.attributes['currentStep'] = currentStep;
+                  }else{
 
-                    if(typeof this.attributes['currentStep'] == 'undefined') {
-                  
-                        currentStep = 0;
-                        this.attributes['currentStep'] = currentStep;
-                    }else{
-                   
-                        currentStep = this.attributes['currentStep'];
-                        currentStep = ( currentStep + 1 ) % 3;
-                        this.attributes['currentStep'] = currentStep;
-                    }
-                        str = complimentMap[currentStep];
-                      
-                        var len = 5;
-                        if(typeof str !== 'undefined')
-                          len = str.length;
-                        else {
-                          str = "large";
-                        }
+                      currentStep = this.attributes['currentStep'];
+                      currentStep = ( currentStep + 1 ) % 3;
+                      this.attributes['currentStep'] = currentStep;
+                  }
+                      str = complimentMap[currentStep];
 
-                        urlTagStart = data.indexOf("<p class=\""+str+"\">");
-                        urlTagEnd = data.indexOf("</p>", urlTagStart);
-                        var url = data.substring(urlTagStart + len + 12, urlTagEnd);
-                        speechOutput = unescapeHtml(url);
-                        this.response.speak(greetings()+" "+speechOutput);
-                        this.response.cardRenderer(speechOutput);
-                        this.emit(':responseReady');
+                      var len = 5;
+                      if(typeof str !== 'undefined')
+                        len = str.length;
+                      else {
+                        str = "large";
+                      }
 
-            });
-        });
-        
-        
-        
+                      urlTagStart = data.indexOf("<p class=\""+str+"\">");
+                      urlTagEnd = data.indexOf("</p>", urlTagStart);
+                      var url = data.substring(urlTagStart + len + 12, urlTagEnd);
+                      speechOutput = unescapeHtml(url);
+                      this.response.speak(greetings()+" "+speechOutput);
+                      this.response.cardRenderer(speechOutput);
+                      this.emit(':responseReady');
+
+          });
+      });
     },
     'PostCompliment': function () {
-        
+
+          if(typeof client != 'undefined') {
+
             var post = "";
-            if(typeof screenName != 'undefined') {
+            if(speechOutput.length == 0){
+              this.emit(':tell',"Come on! Don't be rude. Please greet me first");
+            }else if(typeof screenName != 'undefined') {
                 post = " @"+screenName;
             }
              client.post('statuses/update', {status: speechOutput + post},  function(error, tweet, response) {
@@ -170,36 +187,54 @@ const handlers = {
                  this.response.speak("I have posted the status on twitter!");
                  this.response.cardRenderer(speechOutput+post);
                  this.emit(':responseReady');
+          }else{
+            this.emit(':tellWithLinkAccountCard', 'To use this skill, please go to the companion app to link your twitter account');
+          }
+
 
     },
     'AddFriend':function() {
-        intent = 2;
-        var params = {screen_name: ''};
-        followerName = "", map = {}, names = [];
-        client.get('followers/list', params, function(err, t, r){ 
-        if(err) return null;
-        var i = 0 ;
-        while(i < t.users.length) {
-            var user = t.users[i];
-            var infoArray = [user.screen_name, user.name];
-            map[user.name.toLowerCase()] = infoArray;
-            names.push(user.name.toLowerCase());
-            i++;
-        }
-    });
-        
-        this.response.speak("Do you wanna add a friend?").listen("Why don't you tag a friend?");
-        this.emit(":responseReady");
+
+      if(typeof client != 'undefined') {
+
+
+                  intent = 2;
+                  var params = {screen_name: ''};
+                  followerName = "", map = {}, names = [];
+                  client.get('followers/list', params, function(err, t, r){
+                  if(err) {
+                    this.response.speak("Uh-oh! Try to wish me again.");
+                    this.emit(":responseReady");
+                  };
+                  var i = 0 ;
+                  while(i < t.users.length) {
+                      var user = t.users[i];
+                      var infoArray = [user.screen_name, user.name];
+                      map[user.name.toLowerCase()] = infoArray;
+                      names.push(user.name.toLowerCase());
+                      i++;
+                  }
+              });
+
+                  this.response.speak("Do you wanna add a friend?").listen("Why don't you tag a friend?");
+                  this.emit(":responseReady");
+      }else{
+
+                  this.emit(':tellWithLinkAccountCard', 'To use this skill, please go to the companion app to link your twitter account');
+
+      }
     },
     'TagFriendIntent' : function () {
-        
+
+      if(typeof client != 'undefined') {
+
         if(intent == 4){
             intent = 3;
             if(matches.ratings.length <= index) {
                 this.response.speak('These are all your followers. Why don\'t you try again?').listen("Try to tag a friend one more time");
                 this.emit(':responseReady');
             }
-            
+
             screenName = map[matches.ratings[index].target][0];
             this.response.speak('Do you want to tag '+map[matches.ratings[index].target][1]+'?').listen("You can say yes or no");
             this.emit(':responseReady');
@@ -207,23 +242,29 @@ const handlers = {
             intent = 3;
             index = 0;
             name = this.event.request.intent.slots.firstName.value;
+            console.log(name+ " \n " + names);
             matches = stringSimilarity.findBestMatch(name.toLowerCase(), names);
-            
+
             if(matches.bestMatch.rating == 0) {
                 this.emit(':ask','I could not find anybody with the name '+name+'. Please say the name again.', 'Say the name of the person to tag');
             }
-            
+
             matches.ratings.sort(compare);
             screenName = map[matches.ratings[index].target][0];
             this.response.speak('Do you want to tag '+map[matches.ratings[index].target][1]+'?').listen("You can say yes or no");
             this.emit(':responseReady');
-            
-        } 
-        
-        
+
+        }
+
+
          this.response.speak("I couldn't find "+ name+". Please say the name again.").listen("Please say the first name again");
          this.emit(":responseReady");
-        
+       }else{
+
+         this.emit(':tellWithLinkAccountCard', 'To use this skill, please go to the companion app to link your twitter account');
+
+       }
+
     },
     'AMAZON.HelpIntent': function () {
         const speechOutput = HELP_MESSAGE;
@@ -241,9 +282,9 @@ const handlers = {
         this.emit(':responseReady');
     },
     'AMAZON.YesIntent' : function () {
-        
+
         if(intent == 2){
-            this.emit(':ask', "Tell me the first name of your friend");
+            this.emit(':ask', "Tell me the first name of your friend followed by the word <emphasis level=\"strong\"> TAG </emphasis> ","For instance, You can say <emphasis level=\"strong\"> TAG Micheal </emphasis>");
         }else if(intent == 3) {
             this.emit('PostCompliment');
         }else{
@@ -251,13 +292,13 @@ const handlers = {
         }
     },
     'AMAZON.NoIntent' : function() {
-        
+
         if(intent == 3) {
             index++;
             intent = 4;
             this.emit('TagFriendIntent');
         }
-        
+
         this.emit('Unhandled');
     },
     'Unhandled': function() {
@@ -268,7 +309,7 @@ const handlers = {
 exports.handler = function (event, context, callback) {
     const alexa = Alexa.handler(event, context, callback);
     alexa.APP_ID = APP_ID;
-    
+
      alexa.dynamoDBTableName = 'TABLE_NAME'; // creates new table for session.attributes
       if (alexa.dynamoDBTableName == 'TABLE_NAME' ){
         persistenceEnabled = true;
@@ -305,6 +346,8 @@ function compare(a,b) {
 function greetings() {
     var current_hour = userTime;
     var greet = "";
+
+    console.log("PURRRNAAAAAA GHANTAAAA: "+ current_hour);
     if(current_hour >=0 && current_hour <= 4) {
         greet = nightTime[getRandomInt(0,nightTime.length-1)];
     }else if(current_hour >=5 && current_hour <= 8) {
