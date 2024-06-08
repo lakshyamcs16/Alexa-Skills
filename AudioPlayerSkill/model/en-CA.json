@@ -1,0 +1,243 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "change me",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.LoopOffIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.LoopOnIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NextIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PauseIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PreviousIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ResumeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StartOverIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.YesIntent",
+                    "samples": []
+                },
+                {
+                    "name": "PlayAudio",
+                    "slots": [],
+                    "samples": [
+                        "to play",
+                        "to play the audio",
+                        "to begin",
+                        "to play the music",
+                        "to start playing",
+                        "begin the relaxation",
+                        "to begin the relaxation therapy ",
+                        "to begin the relaxation",
+                        "play the audio",
+                        "start playing",
+                        "play the music",
+                        "begin the relaxation therapy"
+                    ]
+                },
+                {
+                    "name": "PlaySpecificAudio",
+                    "slots": [
+                        {
+                            "name": "Item",
+                            "type": "AudioName"
+                        }
+                    ],
+                    "samples": [
+                        "i want to hear {Item}",
+                        "to play {Item}",
+                        "to begin {Item}",
+                        "to start playing {Item}",
+                        "i want to listen to {Item}"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "WhatCanIBuyIntent",
+                    "slots": [],
+                    "samples": [
+                        "I want to purchase",
+                        "I want to buy",
+                        "what could i buy",
+                        "can i buy something",
+                        "i want to buy something",
+                        "what is available to buy",
+                        "what can i buy"
+                    ]
+                },
+                {
+                    "name": "BuyIntent",
+                    "slots": [],
+                    "samples": [
+                        "buy premium pack"
+                    ]
+                },
+                {
+                    "name": "CancelSubscriptionIntent",
+                    "slots": [],
+                    "samples": [
+                        "cancel premium subscription"
+                    ]
+                },
+                {
+                    "name": "ProductDetailIntent",
+                    "slots": [],
+                    "samples": [
+                        "tell me more about premium pack",
+                        "tell me about premium sounds"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "AudioName",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "game of thrones",
+                                "synonyms": [
+                                    "games of thrones"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "harry potter",
+                                "synonyms": [
+                                    "harry",
+                                    "potter"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "happiness",
+                                "synonyms": [
+                                    "pursuit of happiness"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "star wars",
+                                "synonyms": [
+                                    "star",
+                                    "wars"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "disney"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "sherlock holmes",
+                                "synonyms": [
+                                    "sherlock holmes",
+                                    "share lock"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "stranger things",
+                                "synonyms": [
+                                    "strange things",
+                                    "strange",
+                                    "things"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "gladiator"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "life is strange",
+                                "synonyms": [
+                                    "life"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "interstellar"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "universe",
+                                "synonyms": [
+                                    "universe sound"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "pirates of the caribbean",
+                                "synonyms": [
+                                    "pirates of the caribbean",
+                                    "caribbean"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "titanic"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "skyrim",
+                                "synonyms": [
+                                    "game sound"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
