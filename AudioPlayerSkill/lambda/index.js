@@ -88,32 +88,11 @@ const StartPlaybackHandler = {
  * */
 const SpecificPlaybackHandler = {
     async canHandle(handlerInput) {
-        const attributes = await handlerInput.attributesManager.getPersistentAttributes();
-        const playbackInfo = attributes.playbackInfo;
-        
         const request = handlerInput.requestEnvelope.request;
-
-        const audioName = Alexa.getSlotValue(handlerInput.requestEnvelope, 'Item');
-        const index = getAudioIndex(audioName);
-        
-        if(index !== -1) {
-            playbackInfo.index = index;
-        }
-        
-        
         return request.type === 'IntentRequest' && request.intent.name === 'PlaySpecificAudio';
     },
     handle(handlerInput) {
-        const audioName = Alexa.getSlotValue(handlerInput.requestEnvelope, 'Item');
-        const index = getAudioIndex(audioName);
-
-        if (index === -1) {
-            return handlerInput.responseBuilder
-                .speak(`There is no sound with the name ${audioName}, please try again.`)
-                .reprompt('You can say i want to hear fire')
-                .getResponse();
-        }
-        return controller.play(handlerInput);
+        return controller.playSpecificAudio(handlerInput);
     },
 };
 
@@ -565,8 +544,6 @@ const controller = {
             index
         } = playbackInfo;
 
-        console.log(">>>>> index", index);
-        
         const playBehavior = 'REPLACE_ALL';
         const track = constants.audioData[playOrder[index]];
         const token = playOrder[index];
@@ -622,6 +599,29 @@ const controller = {
 
         return this.play(handlerInput);
     },
+    async playSpecificAudio(handlerInput) {
+        const {
+            playbackInfo,
+            playbackSetting,
+        } = await handlerInput.attributesManager.getPersistentAttributes();
+        
+
+        const audioName = Alexa.getSlotValue(handlerInput.requestEnvelope, 'Item');
+        const index = getAudioIndex(audioName);
+        
+        if(index === -1) {
+            return handlerInput.responseBuilder
+                .speak(`There is no sound with the name ${audioName}, please try again.`)
+                .reprompt('You can say i want to hear fire')
+                .getResponse();
+        }
+        
+        playbackInfo.index = index;
+        playbackInfo.offsetInMilliseconds = 0;
+        playbackInfo.playbackIndexChanged = true;
+        
+        return this.play(handlerInput);
+    },
     async playPrevious(handlerInput) {
         const {
             playbackInfo,
@@ -630,6 +630,7 @@ const controller = {
 
         let previousIndex = playbackInfo.index - 1;
 
+console.log(">>>>>>> previousIndex", previousIndex)
         if (previousIndex === -1) {
             if (playbackSetting.loop) {
                 previousIndex += constants.audioData.length;
@@ -773,7 +774,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         YesHandler,
         NoHandler,
         StartPlaybackHandler,
-        SpecificPlaybackHandler,
+        SpecificPlaybackHandler, 
         NextPlaybackHandler,
         PreviousPlaybackHandler,
         PausePlaybackHandler,
