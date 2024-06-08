@@ -612,7 +612,7 @@ const controller = {
         if(index === -1) {
             return handlerInput.responseBuilder
                 .speak(`There is no sound with the name ${audioName}, please try again.`)
-                .reprompt('You can say i want to hear fire')
+                .reprompt('You can say, I want to hear fire')
                 .getResponse();
         }
         
